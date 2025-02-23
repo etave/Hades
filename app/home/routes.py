@@ -258,7 +258,7 @@ def search_files(data):
         None
     """
     search_query = data.get("query")
-    with InterProcessLock(f"{current_app.root_path}/storage/index/whoosh.lock"):
+    with InterProcessLock(f"{current_app.storage_path}/storage/index/whoosh.lock"):
         search_results = Whoosh().search(search_query, path=f'{data.get("folderId")}')
         search_results = [result["id"] for result in search_results]
     socketio.emit(
@@ -285,7 +285,7 @@ def add_tag(data):
     """
     file_id = data.get("fileId")
     tag = data.get("tag")
-    with InterProcessLock(f"{current_app.root_path}/storage/index/whoosh.lock"):
+    with InterProcessLock(f"{current_app.storage_path}/storage/index/whoosh.lock"):
         Whoosh().add_tag(file_id, tag)
     socketio.emit(
         "tag_added",

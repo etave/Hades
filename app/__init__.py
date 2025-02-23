@@ -27,26 +27,28 @@ def create_app(config_class = Config, is_worker=False):
     from app.desktop import bp as desktop_bp
     from app.password_reset import bp as password_reset_bp
 
-    root_path = os.path.dirname(os.path.abspath(__file__))
-    if not os.path.exists(f'{root_path}/storage'):
-        os.makedirs(f'{root_path}/storage')
-    if not os.path.exists(f'{root_path}/storage/files'):
-        os.makedirs(f'{root_path}/storage/files')
-    if not os.path.exists(f'{root_path}/storage/screenshots'):
-        os.makedirs(f'{root_path}/storage/screenshots')
-    if not os.path.exists(f'{root_path}/storage/database'):
-        os.makedirs(f'{root_path}/storage/database')
-    if not os.path.exists(f'{root_path}/storage/redis'):
-        os.makedirs(f'{root_path}/storage/redis')
-    if not os.path.exists(f'{root_path}/storage/password'):
-        os.makedirs(f'{root_path}/storage/password')
-    json_file_path = f'{root_path}/storage/password/password.json'
+    
+    storage_path = config_class.STORAGE_PATH
+    if not os.path.exists(f'{storage_path}/storage'):
+        os.makedirs(f'{storage_path}/storage')
+    if not os.path.exists(f'{storage_path}/storage/files'):
+        os.makedirs(f'{storage_path}/storage/files')
+    if not os.path.exists(f'{storage_path}/storage/screenshots'):
+        os.makedirs(f'{storage_path}/storage/screenshots')
+    if not os.path.exists(f'{storage_path}/storage/database'):
+        os.makedirs(f'{storage_path}/storage/database')
+    if not os.path.exists(f'{storage_path}/storage/redis'):
+        os.makedirs(f'{storage_path}/storage/redis')
+    if not os.path.exists(f'{storage_path}/storage/password'):
+        os.makedirs(f'{storage_path}/storage/password')
+    json_file_path = f'{storage_path}/storage/password/password.json'
     if not os.path.exists(json_file_path):
         with open(json_file_path, 'w') as json_file:
             json.dump({}, json_file)
 
     app = Flask(__name__)
     app.config.from_object(config_class)
+    app.storage_path = storage_path
     crsf.init_app(app)
     db.init_app(app)
     with app.app_context():
