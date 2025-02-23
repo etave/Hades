@@ -23,7 +23,7 @@ pdf2image==1.17.0
 celery==5.3.6
 fasteners==0.19
 flask_redis==0.4.0
-fr_hades_model @ https://github.com/Nathan-Etave/Hades/releases/download/fr_hades_model-1.3.0/fr_hades_model-1.3.0-py3-none-any.whl
+fr_hades_model @ https://github.com/etave/Hades/releases/download/fr_hades_model-1.3.0/fr_hades_model-1.3.0-py3-none-any.whl
 gunicorn==22.0.0
 gevent==24.2.1
 flask_compress==1.15

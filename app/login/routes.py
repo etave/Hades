@@ -143,7 +143,7 @@ def forgot_password(email):
     user = UTILISATEUR.query.filter_by(email_Utilisateur=email).first()
     uuid4 = uuid.uuid4()
 
-    json_file_path = f"{current_app.root_path}/storage/password/password.json"
+    json_file_path = f"{current_app.storage_path}/storage/password/password.json"
     with open(json_file_path, "r") as json_file:
         data = json.load(json_file)
 

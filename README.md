@@ -14,7 +14,7 @@
     - [Répertoire `app`](#répertoire-app)
     - [Répertoire `app/models`](#répertoire-appmodels)
     - [Répertoire `app/storage`](#répertoire-appstorage)
-    - [Répertoire `app/static`](#répertoire-appstatic)  
+    - [Répertoire `app/static`](#répertoire-appstatic)
     - [Répertoire `app/templates`](#répertoire-apptemplates)
     - [Répertoires `app/*`](#répertoires-app)
   - [Équipe de développement](#équipe-de-développement)
@@ -24,13 +24,14 @@
 ### Prérequis
 
 - Docker 26 ou supérieur
-- Clonez le dépôt git : `git clone https://github.com/Nathan-Etave/Hades.git`
+- Clonez le dépôt git : `git clone https://github.com/etave/Hades.git`
 
 ### Configuration
 
 Pour configurer l'application, il faut créer un fichier `.env` à la racine du projet et y ajouter les variables d'environnement suivantes :
 
 ```
+STORAGE_PATH=<chemin du répertoire de stockage>
 SECRET_KEY=<clé secrète>
 MAIL_SERVER=<serveur SMTP>
 MAIL_PORT=<port SMTP>
@@ -112,5 +113,5 @@ Il contient les répertoires suivants :
 
 ## <u>Équipe de développement</u>
 
-[Etave Nathan](https://github.com/Nathan-Etave)  
+[Etave Nathan](https://github.com/etave)  
 [Mechain Romain](https://github.com/RomainMechain)

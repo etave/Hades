@@ -7,7 +7,8 @@ x-hades-environment: &hades_environment
   MAIL_PORT: ${MAIL_PORT}
   MAIL_USERNAME: ${MAIL_USERNAME}
   MAIL_PASSWORD: ${MAIL_PASSWORD}
-  DATABASE_URI: "sqlite:////app/storage/database/hades.db"
+  STORAGE_PATH: ${STORAGE_PATH}
+  DATABASE_URI: "sqlite:///${STORAGE_PATH}/storage/database/hades.db"
 
 services:
   web:
@@ -16,7 +17,7 @@ services:
     command: gunicorn -b "0.0.0.0:8000" -k gevent --workers 1 --threads 2 'app:create_app()' --reload
     volumes:
       - .:/app
-      - ./app/storage:/app/storage
+      - ${STORAGE_PATH}:${STORAGE_PATH}
     depends_on:
       - redis
     restart: always
@@ -28,7 +29,7 @@ services:
     command: celery -A app.celery worker --loglevel=info --pool=solo --hostname=worker@%h
     volumes:
       - .:/app
-      - ./app/storage:/app/storage
+      - ${STORAGE_PATH}:${STORAGE_PATH}
     depends_on:
       - redis
     restart: always
@@ -39,7 +40,7 @@ services:
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
       - ./redis.conf:/usr/local/etc/redis/redis.conf
-      - ./app/storage/redis:/data
+      - ${STORAGE_PATH}/storage/redis:/data
     restart: always
   nginx:
     image: nginx:latest

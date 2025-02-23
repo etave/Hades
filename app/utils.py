@@ -76,10 +76,10 @@ class Whoosh(metaclass=SingletonMeta):
         analyzer = StandardAnalyzer(stoplist=None)
         schema = Schema(title=TEXT(stored=True, analyzer=analyzer), content=TEXT(stored=True, analyzer=analyzer), path=ID(analyzer=KeywordAnalyzer(), stored=True), tags=KEYWORD(stored=True, commas=True, scorable=True, analyzer=analyzer), id=ID(stored=True, unique=True))
         with current_app.app_context():
-            if not os.path.exists(f'{current_app.root_path}/storage/index') :
-                os.mkdir(f'{current_app.root_path}/storage/index')
-                create_in(f'{current_app.root_path}/storage/index', schema)
-            self.open_index = open_dir(f'{current_app.root_path}/storage/index')
+            if not os.path.exists(f'{current_app.storage_path}/storage/index') :
+                os.mkdir(f'{current_app.storage_path}/storage/index')
+                create_in(f'{current_app.storage_path}/storage/index', schema)
+            self.open_index = open_dir(f'{current_app.storage_path}/storage/index')
 
     def add_document(self, title, content, path, tags, id):
         """
@@ -439,21 +439,21 @@ class FileReader(metaclass=SingletonMeta):
         file = fitz.open(file_path)
         page = file.load_page(0)
         image = page.get_pixmap()
-        if not os.path.exists(f"{current_app.root_path}/storage/screenshots/{folder_id}"):
-            os.makedirs(f"{current_app.root_path}/storage/screenshots/{folder_id}")
-        image.pil_save(f"{current_app.root_path}/storage/screenshots/{folder_id}/{file_id}.png", optimize=True)
+        if not os.path.exists(f"{current_app.storage_path}/storage/screenshots/{folder_id}"):
+            os.makedirs(f"{current_app.storage_path}/storage/screenshots/{folder_id}")
+        image.pil_save(f"{current_app.storage_path}/storage/screenshots/{folder_id}/{file_id}.png", optimize=True)
 
     def screenshots_image(self, file_path, folder_id, file_id):
-        if not os.path.exists(f"{current_app.root_path}/storage/screenshots/{folder_id}"):
-            os.makedirs(f"{current_app.root_path}/storage/screenshots/{folder_id}")
-        shutil.copy(file_path, f"{current_app.root_path}/storage/screenshots/{folder_id}/{file_id}.png")
+        if not os.path.exists(f"{current_app.storage_path}/storage/screenshots/{folder_id}"):
+            os.makedirs(f"{current_app.storage_path}/storage/screenshots/{folder_id}")
+        shutil.copy(file_path, f"{current_app.storage_path}/storage/screenshots/{folder_id}/{file_id}.png")
 
 class FileDownloader(metaclass=SingletonMeta):
     def create_zip(self, file_ids):
-        if not os.path.exists(f"{current_app.root_path}/storage/downloads"):
-            os.makedirs(f"{current_app.root_path}/storage/downloads")
+        if not os.path.exists(f"{current_app.storage_path}/storage/downloads"):
+            os.makedirs(f"{current_app.storage_path}/storage/downloads")
         zip_filename = f"{uuid.uuid4().hex}.zip"
-        zip_path = f"{current_app.root_path}/storage/downloads/{zip_filename}"
+        zip_path = f"{current_app.storage_path}/storage/downloads/{zip_filename}"
         files = db.session.query(FICHIER).filter(FICHIER.id_Fichier.in_(file_ids)).all()
         files_by_folder = {}
         for file in files:
@@ -464,7 +464,7 @@ class FileDownloader(metaclass=SingletonMeta):
             for folder_id in files_by_folder:
                 database_folder = db.session.query(DOSSIER).filter(DOSSIER.id_Dossier == folder_id).first()
                 for file in files_by_folder[folder_id]:
-                    file_path = os.path.join(current_app.root_path, 'storage', 'files', str(folder_id), f'{file.id_Fichier}.{file.extension_Fichier}')
+                    file_path = os.path.join(current_app.storage_path, 'storage', 'files', str(folder_id), f'{file.id_Fichier}.{file.extension_Fichier}')
                     zip_file.write(file_path, arcname=os.path.join(database_folder.nom_Dossier.replace('/', '-'), f'{file.nom_Fichier}'))
         return zip_path
 

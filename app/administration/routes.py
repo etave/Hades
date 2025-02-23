@@ -112,7 +112,7 @@ def upload():
     user_tags = unidecode(
         " ".join(json_data.get("tags").replace(" ", ";").split(";"))
     ).lower()
-    storage_directory = os.path.join(current_app.root_path, "storage", "files")
+    storage_directory = os.path.join(current_app.storage_path, "storage", "files")
     if not os.path.exists(f"{storage_directory}/{folder_id}"):
         os.makedirs(f"{storage_directory}/{folder_id}")
     file = FICHIER(
@@ -194,7 +194,7 @@ def connect():
 @socketio.on("search_files", namespace="/administration")
 def search_files(data):
     search_query = data.get("query")
-    with InterProcessLock(f"{current_app.root_path}/storage/index/whoosh.lock"):
+    with InterProcessLock(f"{current_app.storage_path}/storage/index/whoosh.lock"):
         search_results = Whoosh().search(search_query, path=f'{data.get("folderId")}')
     socketio.emit(
         "search_results",
@@ -871,14 +871,14 @@ def delete_files(data):
             return
     try:
         file_paths = []
-        with InterProcessLock(f"{current_app.root_path}/storage/index/whoosh.lock"):
+        with InterProcessLock(f"{current_app.storage_path}/storage/index/whoosh.lock"):
             Whoosh().delete_documents(file_ids)
         for file_id in file_ids:
             database_file = FICHIER.query.get(file_id)
             db.session.delete(database_file)
             file_paths.append(
                 os.path.join(
-                    current_app.root_path,
+                    current_app.storage_path,
                     "storage",
                     "files",
                     str(database_file.id_Dossier),
@@ -907,13 +907,13 @@ def delete_files(data):
 
 
 def delete_file(file_id):
-    with InterProcessLock(f"{current_app.root_path}/storage/index/whoosh.lock"):
+    with InterProcessLock(f"{current_app.storage_path}/storage/index/whoosh.lock"):
         Whoosh().delete_document(file_id)
     database_file = FICHIER.query.get(file_id)
     db.session.delete(database_file)
     os.remove(
         os.path.join(
-            current_app.root_path,
+            current_app.storage_path,
             "storage",
             "files",
             str(database_file.id_Dossier),
@@ -1085,26 +1085,26 @@ def transfer_files(data):
                     room=f"user_{current_user.id_Utilisateur}",
                 )
                 return
-        with InterProcessLock(f"{current_app.root_path}/storage/index/whoosh.lock"):
+        with InterProcessLock(f"{current_app.storage_path}/storage/index/whoosh.lock"):
             Whoosh().transfer_documents(file_ids, folder_id)
         for file_id in file_ids:
             database_file = FICHIER.query.get(file_id)
             file_path = os.path.join(
-                current_app.root_path,
+                current_app.storage_path,
                 "storage",
                 "files",
                 str(database_file.DOSSIER_.id_Dossier),
                 f"{file_id}.{database_file.extension_Fichier}",
             )
             new_file_path = os.path.join(
-                current_app.root_path,
+                current_app.storage_path,
                 "storage",
                 "files",
                 str(folder_id),
                 f"{file_id}.{database_file.extension_Fichier}",
             )
-            if not os.path.exists(f"{current_app.root_path}/storage/files/{folder_id}"):
-                os.makedirs(f"{current_app.root_path}/storage/files/{folder_id}")
+            if not os.path.exists(f"{current_app.storage_path}/storage/files/{folder_id}"):
+                os.makedirs(f"{current_app.storage_path}/storage/files/{folder_id}")
             os.rename(file_path, new_file_path)
             database_file.id_Dossier = folder_id
         db.session.commit()

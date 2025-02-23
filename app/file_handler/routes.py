@@ -26,14 +26,14 @@ def file(folder_id, file_id):
         return abort(403)
     if not as_screenshot:
         return send_from_directory(
-            f"{current_app.root_path}/storage/files/{folder_id}",
+            f"{current_app.storage_path}/storage/files/{folder_id}",
             f"{file.id_Fichier}.{file.extension_Fichier}",
             as_attachment=as_attachment,
             download_name=file.nom_Fichier,
         )
     else:
         return send_from_directory(
-            f"{current_app.root_path}/storage/screenshots/{folder_id}",
+            f"{current_app.storage_path}/storage/screenshots/{folder_id}",
             f"{file.id_Fichier}.png",
             as_attachment=False,
         )

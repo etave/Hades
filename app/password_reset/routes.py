@@ -28,7 +28,7 @@ def reinitialisation(hash_user_uuid):
     """
     form = PasswordResetForm()
     if form.validate_on_submit():
-        json_file_path = f"{current_app.root_path}/storage/password/password.json"
+        json_file_path = f"{current_app.storage_path}/storage/password/password.json"
         with open(json_file_path, "r") as json_file:
             data = json.load(json_file)
             user_uuid = dehash_uuid(hash_user_uuid)
